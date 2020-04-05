@@ -1,0 +1,33 @@
+<ion-header  class="ion-text-center">
+  <h2 text-center>Backgrounds pour {{campaignValue}}</h2>
+</ion-header>
+<ion-content>
+
+  <form>
+    <ion-radio-group (ionChange)="getSelectedValue($event)">
+      <ion-grid>
+        <ion-row>
+          <ion-col *ngFor="let background of backgrounds" size-md="4" size-xs="12">
+            <ion-item>
+              <div class="center">
+                <div slot="start">
+                  <img src="{{background.url}}">
+                </div>
+                <ion-row>
+                  <ion-label class="labelStyle">{{background.value}}</ion-label>
+                  <ion-radio value="{{background.value}}"></ion-radio>
+                </ion-row>
+              </div>
+            </ion-item>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-radio-group>
+  </form>
+
+<div>
+  <ion-col class="alignButton">
+    <ion-button (click)="closeModal()"> OK </ion-button>
+  </ion-col>
+</div>
+</ion-content>

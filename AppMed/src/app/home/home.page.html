@@ -1,0 +1,312 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <div id="headerWrapper">
+      <ion-icon size="large" id="mainIcon" name="reader-outline"></ion-icon>
+      <ion-title id="mainTitle">Nouvelle commande</ion-title>
+    </div>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-card>
+    <ion-grid>
+      <form [formGroup]="validations_form">
+        <ion-row>
+          <!-- 1ère colonne -->
+          <ion-col size-md="5" size-xs=12>
+
+            <ion-text color="primary">
+              <h6>Informations générales</h6>
+            </ion-text>
+
+            <ion-row>
+              <ion-col size-md="11" size-xs="10">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Nom</ion-label>
+                  <ion-input type="text" formControlName="name" clearInput
+                    placeholder="Saissisez le nom de la commande..." required></ion-input>
+                  <div class="error-message" id="alignText" *ngIf="this.validations_form.get('name').hasError('required') &&
+                      (validations_form.get('name').dirty || validations_form.get('name').touched)">
+                    <ion-icon name="information-circle-outline"></ion-icon>{{this.validations_messages.name.message}}
+                  </div>
+                </ion-item>
+              </ion-col>
+              <div>
+                <ion-col size-md="1" size-xs="2">
+                  <ion-button *ngIf="isBrowser" color="secondary" expand="block"
+                    tooltip="Par exemple : titre du magazine avec date et lieu de parution" positionH="right"
+                    [arrow]="showArrow" [active]="showToggleTooltip" [event]="null"
+                    (click)="showToggleTooltip = !showToggleTooltip">
+                    ?
+                  </ion-button>
+                  <ion-button *ngIf="!isBrowser" color="secondary" expand="block" topOffset="30"
+                    tooltip="Par exemple : titre du magazine avec date et lieu de parution" positionH="left"
+                    [active]="showToggleTooltip" [event]="null" (click)="showToggleTooltip = !showToggleTooltip">
+                    ?
+                  </ion-button>
+                </ion-col>
+              </div>
+            </ion-row>
+
+            <ion-row>
+              <ion-col size-md="11" size-xs="10">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Type</ion-label>
+                  <ion-select formControlName="type" placeholder="Sélectionnez un type..." okText="OK"
+                    cancelText="Retour">
+                    <ion-select-option *ngFor="let type of types" [value]="type">{{type}}</ion-select-option>
+                  </ion-select>
+                  <div class="error-message" id="alignText" *ngIf="this.validations_form.get('type').hasError('required') &&
+                  (validations_form.get('type').dirty || validations_form.get('type').touched)">
+                    <ion-icon name="information-circle-outline"></ion-icon>{{this.validations_messages.type.message}}
+                  </div>
+                </ion-item>
+              </ion-col>
+
+              <div>
+                <ion-col size-md="1" size-xs="2">
+                  <ion-button *ngIf="isBrowser" color="secondary" expand="block"
+                    tooltip="OOH = Out of home advertising / POS = Point of sales" positionH="right" [arrow]="showArrow"
+                    [active]="showToggleTooltip2" [event]="null" (click)="showToggleTooltip2 = !showToggleTooltip2">
+                    ?
+                  </ion-button>
+                  <ion-button *ngIf="!isBrowser" color="secondary" expand="block" topOffset="30"
+                    tooltip="OOH = Out of home advertising / POS = Point of sales" positionH="left"
+                    [active]="showToggleTooltip2" [event]="null" (click)="showToggleTooltip2 = !showToggleTooltip2">
+                    ?
+                  </ion-button>
+                </ion-col>
+              </div>
+            </ion-row>
+
+
+            <ion-row>
+              <ion-col size="12">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Langue</ion-label>
+                  <ion-select formControlName="language" placeholder="Sélectionnez une langue..." okText="OK"
+                    cancelText="Retour">
+                    <ion-select-option *ngFor="let language of languages" [value]="language">{{language}}
+                    </ion-select-option>
+                  </ion-select>
+                  <div class="error-message" id="alignText" *ngIf="this.validations_form.get('language').hasError('required') &&
+              (validations_form.get('language').dirty || validations_form.get('language').touched)">
+                    <ion-icon name="information-circle-outline"></ion-icon>
+                    {{this.validations_messages.language.message}}
+                  </div>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+              <ion-col>
+                <ion-item>
+                  <ion-label position="floating" color="primary">Date d'échéance</ion-label>
+                  <ion-datetime class="placeholderDate" cancelText="Retour" okText="OK" [min]="minDate" [max]="maxDate"
+                    formControlName="date" displayFormat="DD/MM/YYYY" placeholder="JJ/MM/AAAA"></ion-datetime>
+                  <div class="error-message" id="alignText" *ngIf="this.validations_form.get('date').hasError('required') &&
+                    (validations_form.get('date').dirty || validations_form.get('date').touched)">
+                    <ion-icon name="information-circle-outline"></ion-icon>{{this.validations_messages.date.message}}
+                  </div>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-text color="primary">
+              <h6>Format</h6>
+            </ion-text>
+
+            <ion-row class="ion-justify-content-start">
+              <ion-col size-md="2.5" size-xs="6" class="ion-justify-content-start">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Largeur</ion-label>
+                  <ion-input type="number" placeholder="200" formControlName="widthVisibleFormat" min="1"
+                    (ionChange)="calculateFinalFormat()"></ion-input>
+                </ion-item>
+                <div class="error-message" id="alignText"
+                  *ngIf="this.validations_form.get('widthVisibleFormat').hasError('required') &&
+                (validations_form.get('widthVisibleFormat').dirty || validations_form.get('widthVisibleFormat').touched)">
+                  {{this.validations_messages.width.message}}
+                </div>
+
+              </ion-col>
+              <ion-col size-md="2" size-xs="6">
+                <ion-item>
+                  <ion-label position="floating" color="primary"> </ion-label>
+                  <ion-select formControlName="widthScale" okText="OK" cancelText="Retour" size="5"
+                    (ionChange)="calculateFinalFormat()">
+                    <ion-select-option *ngFor="let scale of scales" [value]="scale">{{scale}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="ion-justify-content-start">
+              <ion-col size-md="2.5" size-xs="6" class="ion-justify-content-start">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Longueur</ion-label>
+                  <ion-input type="number" placeholder="287" formControlName="lengthVisibleFormat" min="1"
+                    (ionChange)="calculateFinalFormat()"></ion-input>
+                </ion-item>
+                <div class="error-message" id="alignText"
+                  *ngIf="this.validations_form.get('lengthVisibleFormat').hasError('required') &&
+              (validations_form.get('lengthVisibleFormat').dirty || validations_form.get('lengthVisibleFormat').touched)">
+                  {{this.validations_messages.length.message}}
+                </div>
+
+              </ion-col>
+              <ion-col size-md="2" size-xs="6">
+                <ion-item>
+                  <ion-label position="floating" color="primary"> </ion-label>
+                  <ion-select formControlName="lengthScale" okText="OK" cancelText="Retour"
+                    (ionChange)="calculateFinalFormat()">
+                    <ion-select-option *ngFor="let scale of scales" [value]="scale">{{scale}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row class="ion-justify-content-start">
+              <ion-col size-md="2.5" size-xs="6" class="ion-justify-content-start">
+                <ion-item>
+                  <ion-label position="floating" color="primary">Débords</ion-label>
+                  <ion-input type="number" placeholder="5" formControlName="overflows" min="0"
+                    (ionChange)="calculateFinalFormat()"></ion-input>
+                </ion-item>
+                <div class="error-message" id="alignText" *ngIf="this.validations_form.get('overflows').hasError('required') &&
+              (validations_form.get('overflows').dirty || validations_form.get('overflows').touched)">
+                  {{this.validations_messages.overflows.message}}
+                </div>
+              </ion-col>
+
+              <ion-col size-md="2" size-xs="6">
+                <ion-item>
+                  <ion-label position="floating" color="primary"> </ion-label>
+                  <ion-select formControlName="overflowsScale" okText="OK" cancelText="Retour"
+                    (ionChange)="calculateFinalFormat()">
+                    <ion-select-option *ngFor="let scale of scales" [value]="scale">{{scale}}</ion-select-option>
+                  </ion-select>
+                </ion-item>
+              </ion-col>
+            </ion-row>
+
+            <ion-row>
+
+              <div id="alignText">
+                <ion-col offset-md="0.1" offset-xs="1" size-md="11.9" size-xs="10">
+                  <ion-text>Le format final sera donc de <br *ngIf="!isBrowser">
+                    <ion-text color="primary">{{finalWidth}}{{widthScale}}</ion-text> x
+                    <ion-text color="primary">{{finalLength}}{{lengthScale}}</ion-text>.
+                  </ion-text>
+                </ion-col>
+                <ion-col size-md="1.8" pullMd="1" size-xs="2.7">
+                  <ion-button *ngIf="isBrowser" color="secondary" expand="block"
+                    tooltip="Le format final correspond au format visible avec les débords doublés pour la hauteur et la largeur"
+                    positionH="right" [arrow]="showArrow" [active]="showToggleTooltip3" [event]="null"
+                    (click)="showToggleTooltip3 = !showToggleTooltip3">
+                    ?
+                  </ion-button>
+                  <ion-button *ngIf="!isBrowser" color="secondary" expand="block" topOffset="2000" leftOffset="-100"
+                    tooltip="Le format final correspond au format visible avec les débords doublés pour la hauteur et la largeur"
+                    positionV="bottom" [active]="showToggleTooltip3" [event]="null"
+                    (click)="showToggleTooltip3 = !showToggleTooltip3">
+                    ?
+                  </ion-button>
+                </ion-col>
+              </div>
+            </ion-row>
+
+
+
+
+          </ion-col>
+
+          <!-- 2ème colonne -->
+          <ion-col size-md="6" size-xs=12 offset-md="1">
+
+            <ion-text color="primary">
+              <h6>Références graphiques</h6>
+            </ion-text>
+
+
+            <ion-item>
+              <ion-label position="floating" color="primary">Campagne</ion-label>
+              <ion-select formControlName="campaign" placeholder="Sélectionnez une campagne..." okText="OK"
+                cancelText="Retour" (ionChange)="openModal(true)">
+                <ion-select-option *ngFor="let campaign of campaigns" [value]="campaign">{{campaign}}
+                </ion-select-option>
+              </ion-select>
+              <div class="error-message" id="alignText" *ngIf="this.validations_form.get('campaign').hasError('required') &&
+            (validations_form.get('campaign').dirty || validations_form.get('campaign').touched)">
+                <ion-icon name="information-circle-outline"></ion-icon>{{this.validations_messages.campaign.message}}
+              </div>
+            </ion-item>
+
+            <ion-row *ngIf="backgroundReturned">
+              <ion-col size="12">
+                <ion-row>
+                  <ion-text color="primary">
+                    <h6>Background sélectionné</h6>
+                  </ion-text>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-row>
+                      <img *ngIf="backgroundImage" src="{{backgroundImage.url}}">
+                    </ion-row>
+                    <ion-row>
+                      <ion-text>{{backgroundReturned}}</ion-text>
+                    </ion-row>
+                    <ion-button (click)="openModal()">Modifier</ion-button>
+                    <ion-input formControlName="background" hidden [(ngModel)]="backgroundReturned"></ion-input>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+
+            <ion-row *ngIf="productReturned">
+              <ion-col size="12">
+                <ion-row>
+                  <ion-text color="primary">
+                    <h6>Produit sélectionné</h6>
+                  </ion-text>
+                </ion-row>
+                <ion-row>
+                  <ion-col>
+                    <ion-row>
+                      <img *ngIf="productImage" src="{{productImage.url}}">
+                    </ion-row>
+                    <ion-row>
+                      <ion-text>{{productReturned}}</ion-text>
+                    </ion-row>
+                    <ion-button (click)="openModal2()">Modifier</ion-button>
+                    <ion-input formControlName="product" hidden [(ngModel)]="productReturned"></ion-input>
+                  </ion-col>
+                </ion-row>
+              </ion-col>
+            </ion-row>
+
+            <ion-text color="primary">
+              <h6>Optionnel</h6>
+            </ion-text>
+            <ion-item>
+              <ion-label position="floating" color="primary">Informations supplémentaires</ion-label>
+              <ion-textarea formControlName="addInfos" placeholder="Lorem Ipsum dolor sit amet..."></ion-textarea>
+            </ion-item>
+
+          </ion-col>
+        </ion-row>
+
+        <ion-row>
+          <ion-col>
+            <ion-button (click)="createAnOrder(validations_form.value)" [disabled]="!validations_form.valid"
+              color="primary" class="submit-btn" expand="full" type="submit">
+              Valider la commande
+            </ion-button>
+          </ion-col>
+        </ion-row>
+
+      </form>
+    </ion-grid>
+  </ion-card>
+</ion-content>
